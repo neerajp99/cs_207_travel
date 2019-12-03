@@ -16,13 +16,13 @@ class HotelsList extends Component {
 
   componentDidMount() {
     console.log(this.props.match.params);
-    // this.getHotelsList(
-    //   this.props.match.params.a1,
-    //   this.props.match.params.a2,
-    //   this.props.match.params.a3
-    // );
-      console.log(this.state.result)
-
+    this.getHotelsList(
+      this.props.match.params.a1,
+      this.props.match.params.a2,
+      this.props.match.params.a3
+    );
+    console.log(this.state.result);
+    this.getDescription()
   }
 
   // Get hotels lists
@@ -33,7 +33,7 @@ class HotelsList extends Component {
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
-        "x-rapidapi-key": "FUtTTNdLztmsh6S1nSNSqa78mgO5p1xZXFMjsnsVQl6Hlw3Nvz"
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
         price_filter_currencycode: "USD",
@@ -50,14 +50,13 @@ class HotelsList extends Component {
         room_qty: "1"
       }
     })
-
       .then(response => {
         console.log(response);
-        // this.setState({
-        //   result: response.data.result,
-        //   sort: response.data.sort
-        // });
-        console.log(this.state.result)
+        this.setState({
+          result: response.data.result,
+          sort: response.data.sort
+        });
+        console.log(this.state.result);
       })
       .catch(error => {
         console.log(error);
@@ -71,14 +70,40 @@ class HotelsList extends Component {
         "https://apidojo-booking-v1.p.rapidapi.com/properties/get-description",
       headers: {
         "content-type": "application/octet-stream",
-        "x-rapidapi-host": "h",
-        "x-rapidapi-key": "c"
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
         check_out: "2019-12-15",
         languagecode: "en-us",
         check_in: "2019-12-13",
         hotel_ids: "1498618"
+      }
+    })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  // Get Hotel description
+  getDescription = () => {
+    axios({
+      method: "GET",
+      url:
+        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-description",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
+      },
+      params: {
+        check_out: "2019-12-15",
+        languagecode: "en-us",
+        check_in: "2019-12-13",
+        hotel_ids: "1528418"
       }
     })
       .then(response => {
@@ -105,7 +130,7 @@ class HotelsList extends Component {
     console.log(this.state.toHotelDate);
   };
   render() {
-    const {result } = this.state;
+    const { result } = this.state;
     const hotelItems = Object.keys(result).map((key, hotel) => (
       <ul className="col-md-9 hotellist_right_list list-group" key={key}>
         <li className="col-md-9 hotellist_right_list_item">
@@ -124,23 +149,25 @@ class HotelsList extends Component {
                 <div className="card-body hotel_card_body">
                   <span>{result[key].accommodation_type_name}</span>
                   <span className="hotel_price">
-                    <span className="dollar">$</span>{result[key].min_total_price} <br />
+                    <span className="dollar">$</span>
+                    {result[key].min_total_price} <br />
                   </span>
                   <span className="green_quote">Save 20%</span>
                   <span className="book_hotel_button">Book Now</span>
                   <h5 className="card-title">{result[key].hotel_name}</h5>
                   <p className="card-text">
-                    This is a wider card with supporting text below as a natural
-                    lead-in to additional content. This content is a little bit
-                    longer.
+                    {result[key].address}
+                    <br />
+                    {result[key].district}{result[key].city_name_en}
                   </p>
                   <p className="card-text">
                     <small className="text-muted">
                       <i className="far fa-star star_reviews" />
-                      488 Reviews
+                      {result[key].review_nr} Reviews
                       <br />
-                      <i className="fas fa-map-marker-alt star_reviews" />
-                      1.2 KM from the center.
+
+                      <i class="fas fa-bolt star_reviews"></i>
+                      {result[key].review_score} Review Score
                     </small>
                   </p>
                 </div>
@@ -148,7 +175,6 @@ class HotelsList extends Component {
             </div>
           </div>
         </li>
-
       </ul>
     ));
     return (
