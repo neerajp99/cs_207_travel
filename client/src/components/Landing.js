@@ -21,7 +21,7 @@ class Landing extends Component {
     session: "",
     location: "",
     finalLocation: "-2167973",
-    fromHotelDate: "2019-12-01",
+    fromHotelDate: "2019-12-07",
     toHotelDate: "2019-12-10",
     flight: {}
   };
@@ -200,7 +200,7 @@ class Landing extends Component {
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
-        "x-rapidapi-key": "FUtTTNdLztmsh6S1nSNSqa78mgO5p1xZXFMjsnsVQl6Hlw3Nvz"
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
         languagecode: "en-us",
@@ -226,7 +226,7 @@ class Landing extends Component {
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
-        "x-rapidapi-key": "FUtTTNdLztmsh6S1nSNSqa78mgO5p1xZXFMjsnsVQl6Hlw3Nvz"
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
         price_filter_currencycode: "USD",
