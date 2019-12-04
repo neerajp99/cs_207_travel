@@ -20,7 +20,19 @@ class Hotel extends Component {
     hotel: {},
     reviews: {},
     images: {},
-    photos: {}
+    photos: {},
+    min_total_price: "",
+    hotel_name: "",
+    address: "",
+    district: "",
+    city_trans: "",
+    country_trans: "",
+    review_score: "",
+    review_nr: "",
+    hotel_include_breakfast: "",
+    checkin_from: "",
+    checkin_until: "",
+    checkout_until: ""
   };
 
   componentDidMount() {
@@ -35,7 +47,19 @@ class Hotel extends Component {
       location: this.props.match.params.a1,
       inDate: this.props.match.params.a2,
       outDate: this.props.match.params.a3,
-      hotelId: this.props.match.params.a4
+      hotelId: this.props.match.params.a4,
+      hotel_name: this.props.match.params.a5,
+      address: this.props.match.params.a6,
+      district: this.props.match.params.a7,
+      min_total_price: this.props.match.params.a8,
+      city_trans: this.props.match.params.a9,
+      country_trans: this.props.match.params.a10,
+      review_score: this.props.match.params.a11,
+      review_nr: this.props.match.params.a12,
+      hotel_include_breakfast: this.props.match.params.a13,
+      checkin_from: this.props.match.params.a14,
+      checkin_until: this.props.match.params.a15,
+      checkout_until: this.props.match.params.a16
     });
     // console.log(this.state.result);
     this.getHotelDetails(this.props.match.params.a4);
@@ -272,25 +296,28 @@ class Hotel extends Component {
         </div>
         <div className="hotels_main_info">
           <h3 className="light_location">
-            Lisbon<span>&#8226;</span>Portugal
+            {this.state.min_total_price}
+            <span>&#8226;</span>
+            {this.state.country_trans}
           </h3>
 
-          <h2 className="hotels_main_info_heading">
-            San Francisco Mariott Union
-          </h2>
+          <h2 className="hotels_main_info_heading">{this.state.hotel_name}</h2>
 
           <br />
           <p className="hotels_main_info_para">
-            480 Sutter St, San Francisco, CA 94108, United States
+            {this.state.district}, {this.state.city_trans}
             <hr />
           </p>
 
           <h2 className="hotels_main_info_price">
             <span>$</span>205 /<span>3 Nights</span>
           </h2>
-          <span className="notify">
-            <span>&#8226;</span> Free Breakfast
-          </span>
+
+          {this.state.hotel_include_breakfast == 1 && (
+            <span className="notify">
+              <span>&#8226;</span> Free Breakfast
+            </span>
+          )}
           <span className="notify">
             <span>&#8226;</span> Free Cancellation
           </span>
@@ -397,7 +424,11 @@ class Hotel extends Component {
               </li>
               <li className="hotel_des_list_item">
                 Breakfast <br />
-                <i class="fas fa-coffee" /> <span>Yes</span>
+                <i class="fas fa-coffee" />{" "}
+                <span>
+                  {this.state.hotel_include_breakfast == 1 && "Yes"}
+                  {this.state.hotel_include_breakfast == 0 && "No"}
+                </span>
               </li>
             </ul>
             <br />
