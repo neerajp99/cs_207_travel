@@ -151,7 +151,7 @@ class FlightList extends Component {
         const departureDate = this.state.legs[i].Departure.slice(0, 10);
         const arrivalTime = this.state.legs[i].Arrival.slice(11, 16);
         const departureTime = this.state.legs[i].Departure.slice(11, 16);
-        const duration = this.state.legs[i].Duration / 60;
+        const duration = this.getDuration(this.state.legs[i].Duration);
         const stops = Object.keys(this.state.legs[i].Stops).length;
 
         finalItiernary.push({
@@ -205,6 +205,18 @@ class FlightList extends Component {
     }
   };
 
+  // get FLight Duration
+  getDuration = n => {
+    let hr = parseInt(n / 60);
+    let m = n % 60;
+    return hr + " Hours " + m + " Minutes";
+  };
+
+  getduration = n => {
+    let hr = parseInt(n / 60);
+    let m = n % 60;
+    return hr + " H " + m + " M";
+  };
   getLegsDetails = (itiernary, price) => {
     const flightFinalArray = [];
     for (let i = 0; i < Object.keys(this.state.legs).length; i++) {
@@ -241,6 +253,9 @@ class FlightList extends Component {
           const carrierImage = this.getCarrierImageUrl(
             this.state.segments[this.state.legs[i].SegmentIds[j]].Carrier
           );
+          const duration = this.getduration(
+            this.state.segments[this.state.legs[i].SegmentIds[j]].Duration
+          );
           const flightNumber = this.state.segments[
             this.state.legs[i].SegmentIds[j]
           ].FlightNumber;
@@ -253,8 +268,10 @@ class FlightList extends Component {
             arrivalTime: arrivalTime,
             departureTime: departureTime,
             carrierImage: carrierImage,
-            flightNumber: flightNumber
+            flightNumber: flightNumber,
+            duration: duration
           });
+          // console.log(this.state.segments[this.state.legs[i].SegmentIds[j]])
         }
         return flightFinalArray;
       }
@@ -303,7 +320,7 @@ class FlightList extends Component {
             <span>&#8226;&#8226;&#8226;</span>
             <br />
             <br />
-            <small>5 hours 35 mins</small>
+            <small>{this.state.final[key].flight[0].duration}</small>
           </li>
           <li className="flightlist_right_list_item">
             <h3 className="flightlist_right_list_item_h3">
@@ -366,7 +383,7 @@ class FlightList extends Component {
                   <li className="flight_details_list_item">
                     <h2 className="flight_details_list_item_h2">
                       <i class="fas fa-plane-departure" />
-                      6H 20M
+                      {this.state.final[key].key[keys].duration}
                       <i class="fas fa-plane-arrival" />
                     </h2>
                     <br />
@@ -394,11 +411,11 @@ class FlightList extends Component {
             <ul className="hotels_top_search_list flights_top_search_list ">
               <li className="hotels_top_search_list_item flights_top_search_list_item">
                 <i className="fas fa-map-marker-alt" />
-                <input type="text" placeholder="DELHI" />
+                <input type="text" placeholder={this.props.match.params.v4} />
               </li>
               <li className="hotels_top_search_list_item flights_top_search_list_item">
                 <i className="fas fa-map-marker-alt" />
-                <input type="text" placeholder="LISBON" />
+                <input type="text" placeholder={this.props.match.params.v5} />
               </li>
               <li className="hotels_top_search_list_item flights_top_search_list_item">
                 <i className="fas fa-calendar-alt" />
