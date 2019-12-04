@@ -18,7 +18,9 @@ class Hotel extends Component {
     description: "",
     hotelId: "",
     hotel: {},
-    reviews: {}
+    reviews: {},
+    images: {},
+    photos: {}
   };
 
   componentDidMount() {
@@ -42,9 +44,12 @@ class Hotel extends Component {
       this.props.match.params.a2.trim(),
       this.props.match.params.a3.trim()
     );
+
     this.getReviews(this.props.match.params.a4.trim());
-    this.getPhotos;
-(Math.abs(this.props.match.params.a4.trim()));
+    this.getPhotos(this.props.match.params.a4.trim());
+    Math.abs(this.props.match.params.a4.trim());
+    // this.getPhotoString();
+    console.log(this.state);
   }
 
   // Get Hotel Details
@@ -99,7 +104,7 @@ class Hotel extends Component {
   };
 
   // Get Featured Reviews
-  getReviews = (id) => {
+  getReviews = id => {
     axios({
       method: "GET",
       url:
@@ -118,15 +123,16 @@ class Hotel extends Component {
         console.log(response.data.vpm_featured_reviews);
         this.setState({
           reviews: response.data.vpm_featured_reviews
-        })
+        });
       })
       .catch(error => {
         console.log(error);
       });
   };
 
-
   getPhotos = id => {
+    const photos = [];
+    const photoString = [];
     axios({
       method: "GET",
       url:
@@ -142,10 +148,24 @@ class Hotel extends Component {
       }
     })
       .then(response => {
-        console.log(response);
-        this.setState({
-          photos: response
+        console.log(response.data.data[Object.keys(response.data.data)[0]]);
+
+        photos.push({
+          photo: response.data.data[Object.keys(response.data.data)[0]]
         });
+        console.log("PHOTOS", photos);
+
+        Object.keys(photos[0].photo).map((key, item) => {
+          photoString.push({
+            link: "http://r-ec.bstatic.com" + photos[0].photo[key][4]
+          });
+          // console.log(photoString);
+        });
+        this.setState({
+          images: photoString,
+          photos: response.data.data[Object.keys(response.data.data)[0]]
+        });
+        console.log(this.state.images[0].link);
       })
       .catch(error => {
         console.log(error);
@@ -196,18 +216,33 @@ class Hotel extends Component {
     });
     console.log(this.state.toHotelDate);
   };
+  // Get Hotel photo string
+
+  // getPhotoString = () => {
+  //   const photoString = [];
+  //   const x = this.getPhotos(this.props.match.params.a4.trim());
+  //   console.log("lalalalala", x);
+  //   // console.log("not working");
+  //   Object.keys(this.state.photos).map((key, item) => {
+  //     photoString.push({
+  //       link: "http://r-ec.bstatic.com" + this.state.reviews[key][4]
+  //     });
+  //     console.log(photoString);
+  //   });
+  //   this.setState({
+  //     images: photoString
+  //   });
+  // };
   render() {
     let reviews = Object.keys(this.state.reviews).map((key, index) => (
       <li className="reviews_list_item" key={key}>
         <img src={quote} />
-        <p className="review_p">
-          {this.state.reviews[key].pros}
-        </p>
+        <p className="review_p">{this.state.reviews[key].pros}</p>
         <br />
         <h3 className="review_name">{this.state.reviews[key].author.name}</h3>
         <small>{this.state.reviews[key].author.type}</small>
       </li>
-    ))
+    ));
     return (
       <div className="hotel">
         <div className="hotels_top lolol">
@@ -239,9 +274,11 @@ class Hotel extends Component {
           <h3 className="light_location">
             Lisbon<span>&#8226;</span>Portugal
           </h3>
+
           <h2 className="hotels_main_info_heading">
             San Francisco Mariott Union
           </h2>
+
           <br />
           <p className="hotels_main_info_para">
             480 Sutter St, San Francisco, CA 94108, United States
@@ -260,58 +297,83 @@ class Hotel extends Component {
           <br />
           <button className="book_hotel_button now_hotel">Book Now</button>
         </div>
-
-        <div className="wrap">
-          <div className="gallery">
-            <figure className="gallery__item gallery__item--1">
-              <a href="#img1">
-                <img src={sf} alt="01" className="gallery__img" />
-              </a>
-              <div className="lightbox" id="img1">
-                <img src={sf} alt="" />
-                <a href="#_" className="btn-close">
-                  &times;
+        {Object.keys(this.state.images).length > 0 && (
+          <div className="wrap">
+            <div className="gallery">
+              <figure className="gallery__item gallery__item--1">
+                <a href="#img1">
+                  {this.state.images && (
+                    <img
+                      src={this.state.images[0].link}
+                      alt="01"
+                      className="gallery__img"
+                    />
+                  )}
                 </a>
-              </div>
-            </figure>
+                <div className="lightbox" id="img1">
+                  {this.state.images && (
+                    <img
+                      src={this.state.images[0].link}
+                      alt="01"
+                      className="gallery__img"
+                    />
+                  )}
+                  <a href="#_" className="btn-close">
+                    &times;
+                  </a>
+                </div>
+              </figure>
 
-            <figure className="gallery__item gallery__item--2">
-              <a href="#img2">
-                <img src={rome} alt="02" className="gallery__img" />
-              </a>
-              <div className="lightbox" id="img2">
-                <img src={rome} alt="" />
-                <a href="#_" className="btn-close">
-                  &times;
+              <figure className="gallery__item gallery__item--2">
+                <a href="#img2">
+                  <img
+                    src={this.state.images[1].link}
+                    alt="02"
+                    className="gallery__img"
+                  />
                 </a>
-              </div>
-            </figure>
+                <div className="lightbox" id="img2">
+                  <img src={this.state.images[1].link} alt="" />
+                  <a href="#_" className="btn-close">
+                    &times;
+                  </a>
+                </div>
+              </figure>
 
-            <figure className="gallery__item gallery__item--3">
-              <a href="#img3">
-                <img src={i2} alt="03" className="gallery__img" />
-              </a>
-              <div className="lightbox" id="img3">
-                <img src={i2} alt="" />
-                <a href="#_" className="btn-close">
-                  &times;
+              <figure className="gallery__item gallery__item--3">
+                <a href="#img3">
+                  <img
+                    src={this.state.images[2].link}
+                    alt="03"
+                    className="gallery__img"
+                  />
                 </a>
-              </div>
-            </figure>
+                <div className="lightbox" id="img3">
+                  <img src={this.state.images[2].link} alt="" />
+                  <a href="#_" className="btn-close">
+                    &times;
+                  </a>
+                </div>
+              </figure>
 
-            <figure className="gallery__item gallery__item--4">
-              <a href="#img4">
-                <img src={i1} alt="04" className="gallery__img" />
-              </a>
-              <div className="lightbox" id="img4">
-                <img src={i1} alt="" />
-                <a href="#_" className="btn-close">
-                  &times;
+              <figure className="gallery__item gallery__item--4">
+                <a href="#img4">
+                  <img
+                    src={this.state.images[3].link}
+                    alt="04"
+                    className="gallery__img"
+                  />
                 </a>
-              </div>
-            </figure>
+                <div className="lightbox" id="img4">
+                  <img src={this.state.images[3].link} alt="" />
+                  <a href="#_" className="btn-close">
+                    &times;
+                  </a>
+                </div>
+              </figure>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="hotelss">
           {" "}
@@ -352,10 +414,7 @@ class Hotel extends Component {
             <h2 className="description_head">Featured Reviews:</h2>
 
             <ul className="reviews_list">
-
               {reviews}
-
-
 
               <li className="reviews_list_item">
                 <button className="view_more_reviews">
