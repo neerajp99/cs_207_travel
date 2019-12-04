@@ -1671,3 +1671,27 @@ padding-top: 27vh;
   color : #fff;
   text-decoration: none;
 }
+.search_drop{
+  position: absolute;
+}
+.search_drop_list{
+  list-style: none;
+  display: block;
+  text-align: center;
+  z-index: 89;
+  position: absolute;
+
+}
+.search_drop_list_item{
+  background: #fff;
+  width: 11.9vw;
+  height: 7vh;
+  margin-left: -2.25vw;
+  border-bottom: 1px solid #000;
+  padding-top: 15px;
+  padding-bottom: 20px !important;
+}
+.search_drop_list > li:hover{
+  background: #637496e0;
+  color : #fff;
+}
