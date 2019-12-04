@@ -1664,3 +1664,10 @@ padding-top: 27vh;
   margin-top: 10vh !important;
   /* padding-bottom: 5vh !important; */
 }
+.lala{
+  color: #fff;
+}
+.lala:hover{
+  color : #fff;
+  text-decoration: none;
+}
