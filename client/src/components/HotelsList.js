@@ -3,6 +3,7 @@ import i1 from "../utils/img/i1.jpeg";
 import sf from "../utils/img/sf.jpeg";
 import next from "../utils/img/next.webp";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 class HotelsList extends Component {
   state = {
@@ -11,18 +12,35 @@ class HotelsList extends Component {
       max: 10
     },
     result: {},
-    sort: {}
+    sort: {},
+    location: "",
+    inDate: "",
+    outDate: "",
+    photos: {},
   };
 
   componentDidMount() {
-    console.log(this.props.match.params);
+    console.log(this.state.result);
+
     this.getHotelsList(
       this.props.match.params.a1,
       this.props.match.params.a2,
       this.props.match.params.a3
     );
-    console.log(this.state.result);
-    this.getDescription()
+    this.setState({
+      location: this.props.match.params.a1,
+      inDate: this.props.match.params.a2,
+      outDate: this.props.match.params.a3,
+
+    });
+    // console.log(this.state.result);
+    this.getDescription(
+    Math.abs(this.props.match.params.a1.trim()),
+      this.props.match.params.a3.trim(),
+      this.props.match.params.a2.trim()
+    );
+
+    this.getPhotos(Math.abs(this.props.match.params.a1.trim()));
   }
 
   // Get hotels lists
@@ -63,25 +81,27 @@ class HotelsList extends Component {
       });
   };
 
-  getPhotos = () => {
+
+  getPhotos = id => {
     axios({
       method: "GET",
       url:
-        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-description",
+        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-hotel-photos",
       headers: {
         "content-type": "application/octet-stream",
         "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
         "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
-        check_out: "2019-12-15",
         languagecode: "en-us",
-        check_in: "2019-12-13",
-        hotel_ids: "1498618"
+        hotel_ids: id
       }
     })
       .then(response => {
         console.log(response);
+        this.setState({
+          photos: response
+        });
       })
       .catch(error => {
         console.log(error);
@@ -89,7 +109,7 @@ class HotelsList extends Component {
   };
 
   // Get Hotel description
-  getDescription = () => {
+  getDescription = (id, inDate, outDate) => {
     axios({
       method: "GET",
       url:
@@ -100,14 +120,14 @@ class HotelsList extends Component {
         "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
       },
       params: {
-        check_out: "2019-12-15",
+        check_out: outDate,
         languagecode: "en-us",
-        check_in: "2019-12-13",
-        hotel_ids: "1528418"
+        check_in: inDate,
+        hotel_ids: id
       }
     })
       .then(response => {
-        console.log(response);
+        console.log("Description", response);
       })
       .catch(error => {
         console.log(error);
@@ -131,6 +151,7 @@ class HotelsList extends Component {
   };
   render() {
     const { result } = this.state;
+
     const hotelItems = Object.keys(result).map((key, hotel) => (
       <ul className="col-md-9 hotellist_right_list list-group" key={key}>
         <li className="col-md-9 hotellist_right_list_item">
@@ -153,20 +174,31 @@ class HotelsList extends Component {
                     {result[key].min_total_price} <br />
                   </span>
                   <span className="green_quote">Save 20%</span>
-                  <span className="book_hotel_button">Book Now</span>
+
+                  <span className="book_hotel_button">
+                    <Link
+                      className="lala"
+                      to={`/hotel/${this.props.match.params.a1}, ${
+                        this.props.match.params.a3
+                      }, ${this.props.match.params.a2}, ${result[key].hotel_id}`}
+                    >
+                      Book Now
+                    </Link>
+                  </span>
+
                   <h5 className="card-title">{result[key].hotel_name}</h5>
                   <p className="card-text">
                     {result[key].address}
                     <br />
-                    {result[key].district}{result[key].city_name_en}
+                    {result[key].district}
+                    {result[key].city_name_en}
                   </p>
                   <p className="card-text">
                     <small className="text-muted">
                       <i className="far fa-star star_reviews" />
                       {result[key].review_nr} Reviews
                       <br />
-
-                      <i class="fas fa-bolt star_reviews"></i>
+                      <i class="fas fa-bolt star_reviews" />
                       {result[key].review_score} Review Score
                     </small>
                   </p>
