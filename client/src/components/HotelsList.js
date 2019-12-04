@@ -16,7 +16,7 @@ class HotelsList extends Component {
     location: "",
     inDate: "",
     outDate: "",
-    photos: {},
+    photos: {}
   };
 
   componentDidMount() {
@@ -30,12 +30,11 @@ class HotelsList extends Component {
     this.setState({
       location: this.props.match.params.a1,
       inDate: this.props.match.params.a2,
-      outDate: this.props.match.params.a3,
-
+      outDate: this.props.match.params.a3
     });
     // console.log(this.state.result);
     this.getDescription(
-    Math.abs(this.props.match.params.a1.trim()),
+      Math.abs(this.props.match.params.a1.trim()),
       this.props.match.params.a3.trim(),
       this.props.match.params.a2.trim()
     );
@@ -80,7 +79,6 @@ class HotelsList extends Component {
         console.log(error);
       });
   };
-
 
   getPhotos = id => {
     axios({
@@ -178,9 +176,19 @@ class HotelsList extends Component {
                   <span className="book_hotel_button">
                     <Link
                       className="lala"
-                      to={`/hotel/${this.props.match.params.a1}, ${
+                      to={`/hotel/${this.props.match.params.a1},${
                         this.props.match.params.a3
-                      }, ${this.props.match.params.a2}, ${result[key].hotel_id}`}
+                      },${this.props.match.params.a2},${result[key].hotel_id},${
+                        result[key].hotel_name
+                      },${result[key].address},${result[key].district},${
+                        result[key].min_total_price
+                      },${result[key].city_trans},${
+                        result[key].country_trans
+                      },${result[key].review_score},${result[key].review_nr},${
+                        result[key].hotel_include_breakfast
+                      },${result[key].checkin.from}, ${
+                        result[key].checkin.until
+                      },${result[key].checkout.until}`}
                     >
                       Book Now
                     </Link>
