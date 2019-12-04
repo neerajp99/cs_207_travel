@@ -33,7 +33,9 @@ class Landing extends Component {
     to_value: "",
     location2: "",
     locationPointers: {},
-    location_state: false
+    location_state: false,
+    fromsDate: "",
+    calendar_state: false
   };
 
   //###########################################################
@@ -74,6 +76,18 @@ class Landing extends Component {
       finalLocation: event.target.value
     });
   };
+
+  handleStateChange = (event) => {
+    this.setState({
+      calendar_state: true
+    })
+  }
+  handleChangeState = event => {
+    this.setState({
+      calendar_state: false
+    })
+    console.log('kakakaak')
+  }
 
   onChangeFrom = event => {
     this.setState({
@@ -156,7 +170,8 @@ class Landing extends Component {
   handleSelectFrom = date => {
     console.log(date._d);
     this.setState({
-      fromDate: this.formatDateDisplay(date._d)
+      fromDate: this.formatDateDisplay(date._d),
+      calendar_state: false
     });
     console.log(this.state.fromDate);
   };
@@ -472,13 +487,18 @@ class Landing extends Component {
                       className="form-control form-control-lg text-field text_field"
                       placeholder="Depart"
                       name="depart"
+                      onClick = {this.handleStateChange}
                     />
-                    {/* <Calendar
-                      date={this.state.fromDate}
-                      onChange={this.handleSelectFrom}
+                    {this.state.calendar_state && (
+                      <Calendar
+                      className="calendar_f"
+                        date={this.state.fromsDate}
+                        onChange={this.handleSelectFrom}
+                        onClick={this.handleChangeState}
+                      />
+                    )}
 
-                    />
-                    */}
+
                   </li>
                   <li className="bullshit_one_1">
                     <input
