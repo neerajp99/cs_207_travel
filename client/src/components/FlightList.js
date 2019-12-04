@@ -288,27 +288,35 @@ class FlightList extends Component {
       <div className="flightToggle" key={index}>
         <ul className="flightlist_right_list">
           <li className="flightlist_right_list_item">
-            <h3 className="flightlist_right_list_item_h3">{this.state.final[key].flight[0].departureTime}</h3>
+            <h3 className="flightlist_right_list_item_h3">
+              {this.state.final[key].flight[0].departureTime}
+            </h3>
             <br />
             <small>Departure</small>
           </li>
           <li className="flightlist_right_list_item">
             <span>&#8226;&#8226;&#8226;</span>
 
-            <small className="stop">{this.state.final[key].flight[0].stops} Stops</small>
+            <small className="stop">
+              {this.state.final[key].flight[0].stops} Stops
+            </small>
             <span>&#8226;&#8226;&#8226;</span>
             <br />
             <br />
             <small>5 hours 35 mins</small>
           </li>
           <li className="flightlist_right_list_item">
-            <h3 className="flightlist_right_list_item_h3">{this.state.final[key].flight[0].arrivalTime}</h3>
+            <h3 className="flightlist_right_list_item_h3">
+              {this.state.final[key].flight[0].arrivalTime}
+            </h3>
             <br />
             <small>Arrival</small>
           </li>
 
           <li className="flightlist_right_list_item">
-            <h3 className="flightlist_right_list_item_h3">${this.state.final[key].flight[0].flightPrice.Price}</h3>
+            <h3 className="flightlist_right_list_item_h3">
+              ${this.state.final[key].flight[0].flightPrice.Price}
+            </h3>
             <br />
             <small>Price from</small>
           </li>
@@ -330,19 +338,30 @@ class FlightList extends Component {
               <li className="flightDetails_list_item">
                 <ul className="flight_details_list">
                   <li className="flight_details_list_item">
-                    <img src={this.state.final[key].key[keys].carrierImage} alt="flight_logo" className="flight_logo" />
+                    <img
+                      src={this.state.final[key].key[keys].carrierImage}
+                      alt="flight_logo"
+                      className="flight_logo"
+                    />
                   </li>
                   <li className="flight_details_list_item">
                     <h2 className="flight_details_list_item_h2">
                       {this.state.final[key].key[keys].carrier.Name}
                     </h2>
                     <br />
-                    <small>{this.state.final[key].key[keys].carrier.Code} {this.state.final[key].key[keys].flightNumber}</small>
+                    <small>
+                      {this.state.final[key].key[keys].carrier.Code}{" "}
+                      {this.state.final[key].key[keys].flightNumber}
+                    </small>
                   </li>
                   <li className="flight_details_list_item">
-                    <h2 className="flight_details_list_item_h2 divi">{this.state.final[key].key[keys].originStation.Code}</h2>
+                    <h2 className="flight_details_list_item_h2 divi">
+                      {this.state.final[key].key[keys].originStation.Code}
+                    </h2>
                     <br />
-                    <small>{this.state.final[key].key[keys].departureTime}</small>
+                    <small>
+                      {this.state.final[key].key[keys].departureTime}
+                    </small>
                   </li>
                   <li className="flight_details_list_item">
                     <h2 className="flight_details_list_item_h2">
@@ -353,7 +372,9 @@ class FlightList extends Component {
                     <br />
                   </li>
                   <li className="flight_details_list_item">
-                    <h2 className="flight_details_list_item_h2">{this.state.final[key].key[keys].destinationStation.Code}</h2>
+                    <h2 className="flight_details_list_item_h2">
+                      {this.state.final[key].key[keys].destinationStation.Code}
+                    </h2>
                     <br />
                     <small>{this.state.final[key].key[keys].arrivalTime}</small>
                   </li>
