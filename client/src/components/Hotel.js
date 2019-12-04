@@ -5,9 +5,209 @@ import rome from "../utils/img/rome.jpeg";
 import i1 from "../utils/img/i1.jpeg";
 import i2 from "../utils/img/i2.jpeg";
 import quote from "../utils/img/quote.webp";
+import axios from "axios";
 
 class Hotel extends Component {
+  state = {
+    result: {},
+    sort: {},
+    location: "",
+    inDate: "",
+    outDate: "",
+    photos: {},
+    description: "",
+    hotelId: "",
+    hotel: {},
+    reviews: {}
+  };
+
+  componentDidMount() {
+    console.log(this.props.match.params);
+
+    this.getHotelsList(
+      this.props.match.params.a1,
+      this.props.match.params.a2,
+      this.props.match.params.a3
+    );
+    this.setState({
+      location: this.props.match.params.a1,
+      inDate: this.props.match.params.a2,
+      outDate: this.props.match.params.a3,
+      hotelId: this.props.match.params.a4
+    });
+    // console.log(this.state.result);
+    this.getHotelDetails(this.props.match.params.a4);
+    this.getDescription(
+      Math.abs(this.props.match.params.a4.trim()),
+      this.props.match.params.a2.trim(),
+      this.props.match.params.a3.trim()
+    );
+    this.getReviews(this.props.match.params.a4.trim());
+    this.getPhotos;
+(Math.abs(this.props.match.params.a4.trim()));
+  }
+
+  // Get Hotel Details
+  getHotelDetails = id => {
+    for (let i = 0; i < Object.keys(this.state.result).length; i++) {
+      if (this.state.result[i].hotel_id === id) {
+        console.log("bitch", this.state.result[i]);
+        this.setState({
+          hotel: this.state.result[i]
+        });
+        return this.state.result[i];
+      }
+    }
+  };
+
+  // Get hotels lists
+  getHotelsList = (a, b, c) => {
+    axios({
+      method: "GET",
+      url: "https://apidojo-booking-v1.p.rapidapi.com/properties/list",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
+      },
+      params: {
+        price_filter_currencycode: "USD",
+        travel_purpose: "leisure",
+        search_id: "none",
+        order_by: "popularity",
+        languagecode: "en-us",
+        search_type: "city",
+        offset: "0",
+        dest_ids: a.trim(),
+        guest_qty: "1",
+        arrival_date: b.trim(),
+        departure_date: c.trim(),
+        room_qty: "1"
+      }
+    })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          result: response.data.result,
+          sort: response.data.sort
+        });
+        console.log(this.state);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  // Get Featured Reviews
+  getReviews = (id) => {
+    axios({
+      method: "GET",
+      url:
+        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-featured-reviews",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
+      },
+      params: {
+        languagecode: "en-us",
+        hotel_id: id
+      }
+    })
+      .then(response => {
+        console.log(response.data.vpm_featured_reviews);
+        this.setState({
+          reviews: response.data.vpm_featured_reviews
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+
+  getPhotos = id => {
+    axios({
+      method: "GET",
+      url:
+        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-hotel-photos",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
+      },
+      params: {
+        languagecode: "en-us",
+        hotel_ids: id
+      }
+    })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          photos: response
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  // Get Hotel description
+  getDescription = (id, inDate, outDate) => {
+    axios({
+      method: "GET",
+      url:
+        "https://apidojo-booking-v1.p.rapidapi.com/properties/get-description",
+      headers: {
+        "content-type": "application/octet-stream",
+        "x-rapidapi-host": "apidojo-booking-v1.p.rapidapi.com",
+        "x-rapidapi-key": "4e29a7917fmsha100132be880c55p1409edjsn01cb4c45395f"
+      },
+      params: {
+        check_out: outDate,
+        languagecode: "en-us",
+        check_in: inDate,
+        hotel_ids: id
+      }
+    })
+      .then(response => {
+        console.log(response);
+        this.setState({
+          description: response.data[0].description
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  handleSelectFromHotel = date => {
+    console.log(date._d);
+    this.setState({
+      fromHotelDate: this.formatDateDisplay(date._d)
+    });
+    console.log(this.state.fromHotelDate);
+  };
+
+  handleSelectToHotel = date => {
+    console.log(date._d);
+    this.setState({
+      toHotelDate: this.formatDateDisplay(date._d)
+    });
+    console.log(this.state.toHotelDate);
+  };
   render() {
+    let reviews = Object.keys(this.state.reviews).map((key, index) => (
+      <li className="reviews_list_item" key={key}>
+        <img src={quote} />
+        <p className="review_p">
+          {this.state.reviews[key].pros}
+        </p>
+        <br />
+        <h3 className="review_name">{this.state.reviews[key].author.name}</h3>
+        <small>{this.state.reviews[key].author.type}</small>
+      </li>
+    ))
     return (
       <div className="hotel">
         <div className="hotels_top lolol">
@@ -140,17 +340,10 @@ class Hotel extends Component {
             </ul>
             <br />
             <h2 className="description_head">Description:</h2>
+            {this.state.description && (
+              <p className="hotel_des_p">{this.state.description}</p>
+            )}
 
-            <p className="hotel_des_p">
-              "Stay in the Heart of Lisbon. Located a 10-minute walk from the
-              iconic Marques de Pombal Square and its metro station, the 4-star
-              Lux Lisboa Park features a modern façade and a 24-hour reception.
-              Free WiFi is available throughout the hotel. The soundproofed
-              elegant rooms are tastefully decorated and feature soft tones and
-              wooden floors. Each comes with air conditioning, a seating area
-              and a flat-screen cable TV. Private bathrooms are open space and
-              feature a shower and free toiletries. "
-            </p>
             <a href="#" className="show_more">
               Show More...
             </a>
@@ -159,71 +352,11 @@ class Hotel extends Component {
             <h2 className="description_head">Featured Reviews:</h2>
 
             <ul className="reviews_list">
-              <li className="reviews_list_item">
-                <img src={quote} />
-                <p className="review_p">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <br />
-                <h3 className="review_name">Tanuj Sood</h3>
-                <small>Student, Ashoka University</small>
-              </li>
-              <li className="reviews_list_item">
-                <img src={quote} />
-                <p className="review_p">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <br />
-                <h3 className="review_name">Tanuj Sood</h3>
-                <small>Student, Ashoka University</small>
-              </li>
-              <li className="reviews_list_item">
-                <img src={quote} />
-                <p className="review_p">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <br />
-                <h3 className="review_name">Tanuj Sood</h3>
-                <small>Student, Ashoka University</small>
-              </li>
-              <li className="reviews_list_item">
-                <img src={quote} />
-                <p className="review_p">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <br />
-                <h3 className="review_name">Tanuj Sood</h3>
-                <small>Student, Ashoka University</small>
-              </li>
-              <li className="reviews_list_item">
-                <img src={quote} />
-                <p className="review_p">
-                  Lorem Ipsum is simply dummy text of the printing and
-                  typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown
-                  printer took a galley of type and scrambled it to make a type
-                  specimen book.
-                </p>
-                <br />
-                <h3 className="review_name">Tanuj Sood</h3>
-                <small>Student, Ashoka University</small>
-              </li>
+
+              {reviews}
+
+
+
               <li className="reviews_list_item">
                 <button className="view_more_reviews">
                   View More Reviews..
