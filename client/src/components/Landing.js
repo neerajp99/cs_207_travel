@@ -9,12 +9,13 @@ import BlogPost from "./BlogPost";
 import Newsletter from "./Newsletter";
 import Footer from "./Footer";
 import { Link } from "react-router-dom";
+// import {findDOMNode} from 'react-dom'
 
 class Landing extends Component {
   state = {
-    from: "Delhi",
+    from: "",
     fromFinal: "DEL-sky",
-    to: "San Francisco",
+    to: "",
     finalTo: "LIS-sky",
     fromDate: "2019-12-05",
     toDate: "2019-12-10",
@@ -23,7 +24,16 @@ class Landing extends Component {
     finalLocation: "-2167973",
     fromHotelDate: "2019-12-07",
     toHotelDate: "2019-12-10",
-    flight: {}
+    flight: {},
+    from_state: false,
+    fromPointers: {},
+    from_value: "",
+    to_state: false,
+    toPointers: {},
+    to_value: "",
+    location2: "",
+    locationPointers: {},
+    location_state: false
   };
 
   //###########################################################
@@ -31,6 +41,39 @@ class Landing extends Component {
   // Flights Requets and code goes here
   //###########################################################
   //###########################################################
+
+  // componentDidMount() {
+  //   if (this.state.from.length == 0) {
+  //     this.setState({
+  //       from_state: false
+  //     });
+  //   }
+  // }
+
+  // Change the state back
+  backState = event => {
+    this.setState({
+      from_state: false,
+      [event.target.name]: event.target.value,
+      fromFinal: event.target.value
+    });
+  };
+
+  backState2 = event => {
+    this.setState({
+      to_state: false,
+      [event.target.name]: event.target.value,
+      finalTo: event.target.value
+    });
+  };
+
+  backState3 = event => {
+    this.setState({
+      location_state: false,
+      [event.target.name]: event.target.value,
+      finalLocation: event.target.value
+    });
+  };
 
   onChangeFrom = event => {
     this.setState({
@@ -52,9 +95,17 @@ class Landing extends Component {
     })
       .then(response => {
         console.log(response);
+
         this.setState({
-          fromFinal: response.data.Places[0].PlaceId
+          from_state: true,
+          fromPointers: response.data.Places
         });
+        if (this.state.from.length === 0) {
+          this.setState({
+            from_state: false
+          });
+        }
+
         console.log(this.state);
       })
       .catch(error => {
@@ -83,8 +134,14 @@ class Landing extends Component {
       .then(response => {
         console.log(response);
         this.setState({
-          finalTo: response.data.Places[0].PlaceId
+          to_state: true,
+          toPointers: response.data.Places
         });
+        if (this.state.to.length === 0) {
+          this.setState({
+            to_state: false
+          });
+        }
         console.log(this.state);
       })
       .catch(error => {
@@ -212,6 +269,15 @@ class Landing extends Component {
         this.setState({
           finalLocation: response.data[0].dest_id
         });
+        this.setState({
+          location_state: true,
+          locationPointers: response.data.Places
+        });
+        if (this.state.location.length === 0) {
+          this.setState({
+            location_state: false
+          });
+        }
       })
       .catch(error => {
         console.log(error);
@@ -293,6 +359,37 @@ class Landing extends Component {
   };
 
   render() {
+    console.log(this.state.toPointers);
+    const items = Object.keys(this.state.fromPointers).map((key, index) => (
+      <input
+        className="search_drop_list_item"
+        type="button"
+        name="from_value"
+        value={this.state.fromPointers[key].PlaceId}
+        onClick={this.backState}
+      />
+    ));
+    const itemss = Object.keys(this.state.toPointers).map((key, index) => (
+      <input
+        className="search_drop_list_item"
+        type="button"
+        name="to_value"
+        value={this.state.toPointers[key].PlaceId}
+        onClick={this.backState2}
+      />
+    ));
+    const itemsss = Object.keys(this.state.locationPointers).map(
+      (key, index) => (
+        <input
+          className="search_drop_list_item"
+          type="button"
+          name="location_value"
+          value={this.state.locationPointers[key].PlaceId}
+          onClick={this.backState3}
+        />
+      )
+    );
+
     return (
       <div className="landing">
         <div className="landing_first">
@@ -344,11 +441,18 @@ class Landing extends Component {
                   <li className="bullshit_one_1">
                     <input
                       className="form-control form-control-lg text-field text_field"
-                      placeholder="From"
+                      placeholder={this.state.fromFinal}
                       name="from"
                       onChange={this.onChangeFrom}
+                      type="text"
                     />
+                    <div className="search_drop">
+                      {this.state.from_state && (
+                        <ul className="search_drop_list">{items}</ul>
+                      )}
+                    </div>
                   </li>
+
                   <li className="bullshit_one_1">
                     <input
                       className="form-control form-control-lg text-field text_field"
@@ -356,6 +460,11 @@ class Landing extends Component {
                       name="to"
                       onChange={this.onChangeTo}
                     />
+                    <div className="search_drop">
+                      {this.state.to_state && (
+                        <ul className="search_drop_list">{itemss}</ul>
+                      )}
+                    </div>
                   </li>
 
                   <li className="bullshit_one_1">
@@ -376,6 +485,7 @@ class Landing extends Component {
                       className="form-control form-control-lg text-field text_field"
                       placeholder="Return"
                       name="return"
+                      disabled
                     />
                     {/*<Calendar
                       date={this.state.toDate}
@@ -387,13 +497,14 @@ class Landing extends Component {
                       className="form-control form-control-lg text-field text_field"
                       placeholder="Class & Travellers"
                       name="cabin"
+                      disabled
                     />
                   </li>
                   <li className="bullshit_one_1">
                     <Link
                       to={`/flightlist/${this.state.fromFinal}, ${
                         this.state.finalTo
-                      }, ${this.state.fromDate}`}
+                      }, ${this.state.fromDate}, ${this.state.fromFinal}, ${this.state.finalTo}`}
                     >
                       <input
                         type="submit"
@@ -420,6 +531,9 @@ class Landing extends Component {
                       name="location"
                       onChange={this.onChangeLocation}
                     />
+                    {this.state.location_state && (
+                      <ul className="search_drop_list">{itemsss}</ul>
+                    )}
                   </li>
                   <li className="bullshit_one_1">
                     <input
@@ -467,7 +581,6 @@ class Landing extends Component {
                         type="submit"
                         className="form-control form-control-lg text_field text-field submit_button"
                         value="Find Hotels"
-
                       />
                     </Link>
                   </li>
