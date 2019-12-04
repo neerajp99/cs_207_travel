@@ -19,7 +19,7 @@ function App() {
           component={FlightList}
         />
         <Route exact path="/hotellist/:a1,:a2,:a3" component={HotelsList} />
-        <Route exact path="/hotel" render={() => <Hotel />} />
+        <Route exact path="/hotel/:a1,:a2,:a3, :a4" component={Hotel} />
         <Route exact path="/flight" render={() => <Flight />} />
       </Router>
     </div>
